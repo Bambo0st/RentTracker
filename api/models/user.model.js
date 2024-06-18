@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { emitWarning } from 'process';
 
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
@@ -13,4 +12,4 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-export default User;
+export default User; 

@@ -6,7 +6,7 @@ import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import PrivateRoute from './components/PrivateRouter'
 import Profile from './pages/Profile'
-import Property from './pages/Property'
+import Property from './pages/Property.jsx'
 export default function App() {
   return (
     <BrowserRouter>
@@ -17,7 +17,7 @@ export default function App() {
         <Route path='/sign-up' element={<SignUp />}></Route>
         <Route element={<PrivateRoute />}>
           <Route path='/profile' element={<Profile />}></Route>
-          <Route path='/property' element={<Property/>}></Route>
+          <Route path='/property/:id' element={<Property />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
