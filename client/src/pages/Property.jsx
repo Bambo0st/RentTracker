@@ -58,8 +58,8 @@ function Property() {
                 body: JSON.stringify(newTenant)
             });
             if (res.ok) {
-                const updatedTenants = await res.json();
-                setTenants(updatedTenants || []);
+                const updatedTenant = await res.json();
+                setTenants([...tenants, updatedTenant]); // Update tenants list with new tenant
                 setNewTenant({ name: '', contact: '', room: '', rentAmount: '', dueDate: '' });
             } else {
                 const errorData = await res.json();
@@ -67,6 +67,24 @@ function Property() {
             }
         } catch (err) {
             setError('Failed to add tenant'); // Handle network or other errors
+        }
+    };
+
+    const handleDeleteTenant = async (tenantId) => {
+        try {
+            const res = await fetch(`/api/property/${id}/tenants/${tenantId}`, {
+                method: 'DELETE'
+            });
+
+            if (res.ok) {
+                // Filter out the deleted tenant from the state
+                setTenants(tenants.filter(tenant => tenant._id !== tenantId));
+            } else {
+                const errorData = await res.json();
+                setError(errorData.message || 'Failed to delete tenant');
+            }
+        } catch (err) {
+            setError('Failed to delete tenant');
         }
     };
 
@@ -166,6 +184,7 @@ function Property() {
                             <th className="py-2 px-4 border-b border-gray-200">Due Date</th>
                             <th className="py-2 px-4 border-b border-gray-200">Current Balance</th>
                             <th className="py-2 px-4 border-b border-gray-200">Payment Status</th>
+                            <th className="py-2 px-4 border-b border-gray-200">Actions</th> {/* New column for delete button */}
                         </tr>
                     </thead>
                     <tbody>
@@ -179,17 +198,25 @@ function Property() {
                                     <td className="py-2 px-4 border-b border-gray-200">{tenant.dueDate ? new Date(tenant.dueDate).toLocaleDateString() : '-'}</td>
                                     <td className="py-2 px-4 border-b border-gray-200">{tenant.currentBalance}</td>
                                     <td className="py-2 px-4 border-b border-gray-200">{tenant.paymentStatus}</td>
+                                    <td className="py-2 px-4 border-b border-gray-200">
+                                        <button
+                                            className="text-red-500 hover:text-red-700"
+                                            onClick={() => handleDeleteTenant(tenant._id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="7" className="py-2 px-4 text-center">No tenants found</td>
+                                <td colSpan="8" className="py-2 px-4 text-center">No tenants found</td>
                             </tr>
                         )}
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div >
     );
 }
 
