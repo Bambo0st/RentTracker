@@ -6,10 +6,10 @@ const tenantSchema = new mongoose.Schema({
     room: { type: String, required: true, unique: true },
     property: { type: mongoose.Schema.Types.ObjectId, required: true },
     rentAmount: { type: Number, required: true },
+    dateOfJoining: { type: Date, required: true },
     dueDate: { type: Date, required: true },
-    currentBalance: { type: Number, default: 0 },
+    CurrentDues: { type: Number, default: 0 },
     paymentStatus: { type: String, enum: ['up-to-date', 'overdue'], default: 'up-to-date' }
-
 
 }, { timestamps: true })
 

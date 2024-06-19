@@ -7,7 +7,7 @@ function Property() {
     const [error, setError] = useState(null);
     const [property, setProperty] = useState(null);
     const [tenants, setTenants] = useState([]);
-    const [newTenant, setNewTenant] = useState({ name: '', contact: '', room: '', rentAmount: '', dueDate: '' });
+    const [newTenant, setNewTenant] = useState({ name: '', contact: '', room: '', rentAmount: '', dateOfJoining: '', currentDues: 0, dueDate: '', });
 
     useEffect(() => {
         const fetchProperty = async () => {
@@ -58,9 +58,9 @@ function Property() {
                 body: JSON.stringify(newTenant)
             });
             if (res.ok) {
-                const updatedTenant = await res.json();
-                setTenants([...tenants, updatedTenant]); // Update tenants list with new tenant
-                setNewTenant({ name: '', contact: '', room: '', rentAmount: '', dueDate: '' });
+                const addedTenant = await res.json();
+                setTenants([...tenants, addedTenant]); // Add new tenant to tenants array
+                setNewTenant({ name: '', contact: '', room: '', rentAmount: '', currentDues: 0, dateOfJoining: '', dueDate: '' }); // Clear form fields
             } else {
                 const errorData = await res.json();
                 setError(errorData.message || 'Failed to add tenant'); // Set a default error message if message is not present
@@ -85,6 +85,28 @@ function Property() {
             }
         } catch (err) {
             setError('Failed to delete tenant');
+        }
+    };
+
+    const handleRecordTransaction = async (tenantId) => {
+        try {
+            const res = await fetch(`/api/property/${id}/tenants/${tenantId}/record-transaction`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ transactionDetails: 'Details of the transaction' })
+            });
+
+            if (res.ok) {
+                // Optionally handle success scenario
+                console.log('Transaction recorded successfully');
+            } else {
+                const errorData = await res.json();
+                setError(errorData.message || 'Failed to record transaction');
+            }
+        } catch (err) {
+            setError('Failed to record transaction');
         }
     };
 
@@ -150,6 +172,18 @@ function Property() {
                         />
                     </div>
                     <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dateOfJoining">Date of Joining</label>
+                        <input
+                            type="date"
+                            id="dateOfJoining"
+                            name="dateOfJoining"
+                            value={newTenant.dateOfJoining}
+                            onChange={handleInputChange}
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            required
+                        />
+                    </div>
+                    <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dueDate">Due Date</label>
                         <input
                             type="date"
@@ -181,10 +215,11 @@ function Property() {
                             <th className="py-2 px-4 border-b border-gray-200">Contact</th>
                             <th className="py-2 px-4 border-b border-gray-200">Room</th>
                             <th className="py-2 px-4 border-b border-gray-200">Rent Amount</th>
+                            <th className="py-2 px-4 border-b border-gray-200">Date of Joining</th>
                             <th className="py-2 px-4 border-b border-gray-200">Due Date</th>
-                            <th className="py-2 px-4 border-b border-gray-200">Current Balance</th>
+                            <th className="py-2 px-4 border-b border-gray-200">Current Dues</th>
                             <th className="py-2 px-4 border-b border-gray-200">Payment Status</th>
-                            <th className="py-2 px-4 border-b border-gray-200">Actions</th> {/* New column for delete button */}
+                            <th className="py-2 px-4 border-b border-gray-200">Actions</th> {/* New column for actions */}
                         </tr>
                     </thead>
                     <tbody>
@@ -195,8 +230,9 @@ function Property() {
                                     <td className="py-2 px-4 border-b border-gray-200">{tenant.contact}</td>
                                     <td className="py-2 px-4 border-b border-gray-200">{tenant.room}</td>
                                     <td className="py-2 px-4 border-b border-gray-200">{tenant.rentAmount}</td>
+                                    <td className="py-2 px-4 border-b border-gray-200">{tenant.dateOfJoining ? new Date(tenant.dateOfJoining).toLocaleDateString() : '-'}</td>
                                     <td className="py-2 px-4 border-b border-gray-200">{tenant.dueDate ? new Date(tenant.dueDate).toLocaleDateString() : '-'}</td>
-                                    <td className="py-2 px-4 border-b border-gray-200">{tenant.currentBalance}</td>
+                                    <td className="py-2 px-4 border-b border-gray-200">{tenant.currentDues}</td>
                                     <td className="py-2 px-4 border-b border-gray-200">{tenant.paymentStatus}</td>
                                     <td className="py-2 px-4 border-b border-gray-200">
                                         <button
@@ -206,17 +242,25 @@ function Property() {
                                             Delete
                                         </button>
                                     </td>
+                                    <td className="py-2 px-4 border-b border-gray-200">
+                                        <button
+                                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                            onClick={() => handleRecordTransaction(tenant._id)}
+                                        >
+                                            Record Transaction
+                                        </button>
+                                    </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="8" className="py-2 px-4 text-center">No tenants found</td>
+                                <td colSpan="10" className="py-2 px-4 text-center">No tenants found</td>
                             </tr>
                         )}
                     </tbody>
                 </table>
             </div>
-        </div >
+        </div>
     );
 }
 
