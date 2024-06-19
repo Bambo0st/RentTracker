@@ -12,8 +12,7 @@ export const getRecordsByTenantId = async (req, res) => {
             return res.status(404).json({ error: 'Tenant not found' });
         }
 
-        // const today = new Date();
-        const today = new Date('2024-10-01')
+        const today = new Date();
         let joiningDate = new Date(tenant.dateOfJoining);
 
         if (tenant.paymentRecords.length === 0) {
@@ -76,7 +75,12 @@ export const getRecordsByTenantId = async (req, res) => {
         }
 
         await tenant.save();
-        res.status(200).json(tenant.paymentRecords);
+        var result = []
+        for (var i = 0; i < tenant.paymentRecords.length; i++) {
+            var paymentRecord = await Payment.findById(tenant.paymentRecords[i]);
+            if (paymentRecord) result.push(paymentRecord)
+        }
+        res.status(200).json(result);
     } catch (error) {
         console.error("Error fetching or generating payment records:", error);
         res.status(500).json({ error: error.message });
@@ -120,4 +124,6 @@ export const recordPayment = async (req, res) => {
 };
 
 
-
+export const getDues = (req,res) =>{
+    
+}

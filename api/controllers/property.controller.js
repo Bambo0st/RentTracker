@@ -2,6 +2,7 @@ import Property from "../models/property.model.js";
 import errorHandler from '../middleware/errorHandler.js'
 import User from "../models/user.model.js";
 import Tenant from "../models/tenant.model.js";
+import Payment from "../models/payment.model.js";
 
 export const addProperty = async (req, res, next) => {
     const { name, address, owner } = req.body;
@@ -64,13 +65,41 @@ export const addTenant = async (req, res, next) => {
         const isTenant = await Tenant.findOne({ room, property: propertyId })
         if (isTenant) return next(errorHandler(400, "Room is already occupied by another Tenant"))
 
-        const newTenant = new Tenant({ name, contact, room, rentAmount, dateOfJoining, dueDate, property: propertyId, currentDues:0,paymentStatus: "up-to-date" })
-        const savedTenant = await newTenant.save();
+        const newTenant = new Tenant({ name, contact, room, rentAmount, dateOfJoining, dueDate, property: propertyId, currentDues: 0, paymentStatus: "up-to-date" })
+
+        const savedTenant = await addFirstDues(newTenant)
         property.tenants.push(savedTenant._id);
         await property.save();
+
         res.status(201).json(savedTenant)
     } catch (err) {
-        next(500, err.message);
+        next(errorHandler(500, err.message));
     }
 }
 
+const addFirstDues = async (tenant) => {
+    let joiningDate = new Date(tenant.dateOfJoining);
+    if (joiningDate.getDate() !== 1) {
+        // Calculate initial due amount until end of first month
+        console.log("here i come")
+        const nextMonthOfJoiningDate = new Date(joiningDate);
+        nextMonthOfJoiningDate.setMonth(nextMonthOfJoiningDate.getMonth() + 1);
+        nextMonthOfJoiningDate.setDate(1);
+
+        const daysInInitialPeriod = (nextMonthOfJoiningDate - joiningDate) / (1000 * 60 * 60 * 24);
+        const dailyRent = tenant.rentAmount / 30; // Assuming 30 days in a month for simplicity
+        const initialDueAmount = Math.round(dailyRent * daysInInitialPeriod);
+
+        const initialPaymentRecord = new Payment({
+            tenantId: tenant._id,
+            dueAmount: initialDueAmount,
+            dueDate: joiningDate
+        });
+
+        await initialPaymentRecord.save();
+        tenant.paymentRecords.push(initialPaymentRecord._id);
+        tenant.currentDues = initialDueAmount
+        console.log(tenant)
+    }
+    return tenant.save()
+}
