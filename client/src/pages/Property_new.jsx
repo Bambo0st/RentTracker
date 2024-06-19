@@ -12,7 +12,6 @@ function Property() {
     const [error, setError] = useState(null);
     const [property, setProperty] = useState(null);
     const [tenants, setTenants] = useState([]);
-    const [newTenant, setNewTenant] = useState({ name: '', contact: '', room: '', rentAmount: '', dateOfJoining: '', currentDues: 0, dueDate: '', });
 
     useEffect(() => {
         const fetchProperty = async () => {
@@ -59,7 +58,6 @@ function Property() {
             if (res.ok) {
                 const addedTenant = await res.json();
                 setTenants([...tenants, addedTenant]);
-                setNewTenant({ name: '', contact: '', room: '', rentAmount: '', currentDues: 0, dateOfJoining: '', dueDate: '' });
             } else {
                 const errorData = await res.json();
                 setError(errorData.message || 'Failed to add tenant');

@@ -11,7 +11,7 @@ const TenantsTable = ({ tenants, onDeleteTenant, onRecordTransaction }) => {
                         <th className="py-2 px-4 border-b border-gray-200">Room</th>
                         <th className="py-2 px-4 border-b border-gray-200">Rent Amount</th>
                         <th className="py-2 px-4 border-b border-gray-200">Date of Joining</th>
-                        <th className="py-2 px-4 border-b border-gray-200">Due Date</th>
+                        {/* <th className="py-2 px-4 border-b border-gray-200">Due Date</th> */}
                         <th className="py-2 px-4 border-b border-gray-200">Current Dues</th>
                         <th className="py-2 px-4 border-b border-gray-200">Payment Status</th>
                         <th className="py-2 px-4 border-b border-gray-200">Actions</th>
@@ -26,7 +26,7 @@ const TenantsTable = ({ tenants, onDeleteTenant, onRecordTransaction }) => {
                                 <td className="py-2 px-4 border-b border-gray-200">{tenant.room}</td>
                                 <td className="py-2 px-4 border-b border-gray-200">{tenant.rentAmount}</td>
                                 <td className="py-2 px-4 border-b border-gray-200">{tenant.dateOfJoining ? new Date(tenant.dateOfJoining).toLocaleDateString() : '-'}</td>
-                                <td className="py-2 px-4 border-b border-gray-200">{tenant.dueDate ? new Date(tenant.dueDate).toLocaleDateString() : '-'}</td>
+                                {/* <td className="py-2 px-4 border-b border-gray-200">{tenant.dueDate ? new Date(tenant.dueDate).toLocaleDateString() : '-'}</td> */}
                                 <td className="py-2 px-4 border-b border-gray-200">{tenant.currentDues}</td>
                                 <td className="py-2 px-4 border-b border-gray-200">{tenant.paymentStatus}</td>
                                 <td className="py-2 px-4 border-b border-gray-200">

@@ -8,7 +8,7 @@ const AddTenantForm = ({ onAddTenant, error }) => {
         rentAmount: '',
         dateOfJoining: '',
         currentDues: 0,
-        dueDate: ''
+        // dueDate: ''
     });
 
     const handleInputChange = (e) => {
@@ -26,7 +26,7 @@ const AddTenantForm = ({ onAddTenant, error }) => {
             rentAmount: '',
             currentDues: 0,
             dateOfJoining: '',
-            dueDate: ''
+            // dueDate: ''
         });
     };
 
@@ -92,7 +92,7 @@ const AddTenantForm = ({ onAddTenant, error }) => {
                         required
                     />
                 </div>
-                <div className="mb-4">
+                {/* <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dueDate">Due Date</label>
                     <input
                         type="date"
@@ -103,7 +103,7 @@ const AddTenantForm = ({ onAddTenant, error }) => {
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         required
                     />
-                </div>
+                </div> */}
                 <div className="flex items-center justify-between">
                     <button
                         type="submit"
