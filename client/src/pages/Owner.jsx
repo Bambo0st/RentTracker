@@ -11,7 +11,6 @@ export default function Owner() {
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [hoveredProperty, setHoveredProperty] = useState(null);
-
     useEffect(() => {
         const fetchProperties = async () => {
             try {

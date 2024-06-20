@@ -20,7 +20,7 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 export default function Profile() {
     const fileRef = useRef(null);
-    const { currentUser, loading, error } = useSelector((state) => state.user);
+    var { currentUser, loading, error } = useSelector((state) => state.user);
     const [file, setFile] = useState(undefined);
     const [filePerc, setFilePerc] = useState(0);
     const [fileUploadError, setFileUploadError] = useState(false);
@@ -80,7 +80,6 @@ export default function Profile() {
                 body: JSON.stringify(formData),
             });
             const data = await res.json();
-            console.log(data)
             if (data.success === false) {
                 dispatch(updateUserFailure(data.message));
                 return;
@@ -120,6 +119,7 @@ export default function Profile() {
                 return;
             }
             dispatch(deleteUserSuccess(data));
+            currentUser = null
         } catch (error) {
             dispatch(deleteUserFailure(error.message));
         }

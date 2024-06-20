@@ -5,7 +5,6 @@ import errorHandler from '../middleware/errorHandler.js';
 
 
 export const updateUser = async (req, res, next) => {
-    console.log("I can com here")
     if (req.user.id !== req.params.id)
         return next(errorHandler(401, 'You can only update your own account!'));
     try {
@@ -60,7 +59,6 @@ export const getUserListings = async (req, res, next) => {
 };
 
 export const getUser = async (req, res, next) => {
-    console.log("her in getUser")
     try {
 
         const user = await User.findById(req.params.id);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PaymentModal from './PaymentModal.jsx';
 
 const TenantsTable = ({ tenants, onDeleteTenant }) => {
@@ -45,6 +45,14 @@ const TenantsTable = ({ tenants, onDeleteTenant }) => {
         }
     };
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = date.getDate();
+        const month = date.toLocaleString('default', { month: 'short' });
+        const year = date.getFullYear();
+        return `${day} ${month} ${year}`;
+    };
+
     return (
         <div className="overflow-x-auto mb-6">
             <table className="min-w-full bg-white border border-gray-200">
@@ -68,7 +76,7 @@ const TenantsTable = ({ tenants, onDeleteTenant }) => {
                                 <td className="py-2 px-4 border-b border-gray-200">{tenant.contact}</td>
                                 <td className="py-2 px-4 border-b border-gray-200">{tenant.room}</td>
                                 <td className="py-2 px-4 border-b border-gray-200 font-bold">₹ {tenant.rentAmount}</td>
-                                <td className="py-2 px-4 border-b border-gray-200">{tenant.dateOfJoining ? new Date(tenant.dateOfJoining).toLocaleDateString() : '-'}</td>
+                                <td className="py-2 px-4 border-b border-gray-200">{tenant.dateOfJoining ? formatDate(tenant.dateOfJoining) : '-'}</td>
                                 <td className={`py-2 px-4 border-b border-gray-200 font-bold ${tenant.currentDues > 0 ? 'text-red-500' : 'text-green-500'}`}>
                                     ₹ {tenant.currentDues}
                                 </td>

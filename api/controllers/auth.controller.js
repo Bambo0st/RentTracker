@@ -42,7 +42,6 @@ export const signin = async (req, res, next) => {
 
 export const signout = async (req, res, next) => {
     try {
-        console.log("signout part")
         res.clearCookie('access_token');
         res.status(200).json('User Logged Out Successfully')
     }
