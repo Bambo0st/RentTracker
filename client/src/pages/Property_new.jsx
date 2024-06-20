@@ -1,10 +1,9 @@
-// Property.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PropertyInfo from '../components/PropertyPage/PropertyInfo';
 import AddTenantForm from '../components/PropertyPage/AddTenantForm';
 import TenantsTable from '../components/PropertyPage/TenantsTable';
+import TotalDues from '../components/PropertyPage/TotalDues';  // Make sure this path is correct
 
 function Property() {
     const { id } = useParams();
@@ -58,6 +57,7 @@ function Property() {
             if (res.ok) {
                 const addedTenant = await res.json();
                 setTenants([...tenants, addedTenant]);
+                setError('');
             } else {
                 const errorData = await res.json();
                 setError(errorData.message || 'Failed to add tenant');
@@ -114,6 +114,8 @@ function Property() {
             <AddTenantForm onAddTenant={handleAddTenant} error={error} />
 
             <TenantsTable tenants={tenants} onDeleteTenant={handleDeleteTenant} onRecordTransaction={handleRecordTransaction} />
+
+            <TotalDues tenants={tenants} />
         </div>
     );
 }

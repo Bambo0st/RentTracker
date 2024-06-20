@@ -11,7 +11,6 @@ const TenantsTable = ({ tenants, onDeleteTenant }) => {
         try {
             const response = await fetch(`/api/payment/${tenantId}`);
             const data = await response.json();
-            console.log(data)
             setPaymentRecords(data);
         } catch (error) {
             console.error("Error fetching payment records:", error);
@@ -24,36 +23,58 @@ const TenantsTable = ({ tenants, onDeleteTenant }) => {
         setPaymentRecords([]);
     };
 
-    const recordedPayment = (paymentId) => {
-        console.log("in tenant recorded payment")
+    const recordedPayment = async (paymentId) => {
+        try {
+            const res = await fetch(`/api/payment/${paymentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (res.ok) {
+                setPaymentRecords(prevRecords =>
+                    prevRecords.map(record =>
+                        record._id === paymentId ? { ...record, paid_status: true } : record
+                    )
+                );
+            } else {
+                console.error('Failed to update payment status');
+            }
+        } catch (err) {
+            console.error('Error updating payment status:', err);
+        }
+    };
 
-    }
     return (
         <div className="overflow-x-auto mb-6">
             <table className="min-w-full bg-white border border-gray-200">
                 <thead>
                     <tr>
-                        <th className="py-2 px-4 border-b border-gray-200">Tenant Name</th>
-                        <th className="py-2 px-4 border-b border-gray-200">Contact</th>
-                        <th className="py-2 px-4 border-b border-gray-200">Room</th>
-                        <th className="py-2 px-4 border-b border-gray-200">Rent Amount</th>
-                        <th className="py-2 px-4 border-b border-gray-200">Date of Joining</th>
-                        <th className="py-2 px-4 border-b border-gray-200">Current Dues</th>
-                        <th className="py-2 px-4 border-b border-gray-200">Payment Status</th>
-                        <th className="py-2 px-4 border-b border-gray-200">Actions</th>
+                        <th className="py-2 px-4 border-b border-gray-200 text-left">Tenant Name</th>
+                        <th className="py-2 px-4 border-b border-gray-200 text-left">Contact</th>
+                        <th className="py-2 px-4 border-b border-gray-200 text-left">Room</th>
+                        <th className="py-2 px-4 border-b border-gray-200 text-left">Rent Amount</th>
+                        <th className="py-2 px-4 border-b border-gray-200 text-left">Date of Joining</th>
+                        <th className="py-2 px-4 border-b border-gray-200 text-left">Current Dues</th>
+                        <th className="py-2 px-4 border-b border-gray-200 text-left">Payment Status</th>
+                        <th className="py-2 px-4 border-b border-gray-200 text-left">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {tenants.length > 0 ? (
                         tenants.map((tenant, index) => (
                             <tr key={index}>
-                                <td className="py-2 px-4 border-b border-gray-200">{tenant.name}</td>
+                                <td className="py-2 px-4 border-b border-gray-200 font-bold">{tenant.name}</td>
                                 <td className="py-2 px-4 border-b border-gray-200">{tenant.contact}</td>
                                 <td className="py-2 px-4 border-b border-gray-200">{tenant.room}</td>
-                                <td className="py-2 px-4 border-b border-gray-200">{tenant.rentAmount}</td>
+                                <td className="py-2 px-4 border-b border-gray-200 font-bold">₹ {tenant.rentAmount}</td>
                                 <td className="py-2 px-4 border-b border-gray-200">{tenant.dateOfJoining ? new Date(tenant.dateOfJoining).toLocaleDateString() : '-'}</td>
-                                <td className="py-2 px-4 border-b border-gray-200">{tenant.currentDues}</td>
-                                <td className="py-2 px-4 border-b border-gray-200">{tenant.paymentStatus}</td>
+                                <td className={`py-2 px-4 border-b border-gray-200 font-bold ${tenant.currentDues > 0 ? 'text-red-500' : 'text-green-500'}`}>
+                                    ₹ {tenant.currentDues}
+                                </td>
+                                <td className={`py-2 px-4 border-b border-gray-200 font-bold ${tenant.paymentStatus === 'up-to-date' ? 'text-green-500' : 'text-yellow-500'}`}>
+                                    {tenant.paymentStatus}
+                                </td>
                                 <td className="py-2 px-4 border-b border-gray-200">
                                     <button
                                         className="text-red-500 hover:text-red-700"

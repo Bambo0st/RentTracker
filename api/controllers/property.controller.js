@@ -16,6 +16,18 @@ export const addProperty = async (req, res, next) => {
         res.status(500).json({ msg: 'Server Error', error: err.message })
     }
 }
+export const deleteProperty = async (req, res, next) => {
+    const { propertyId } = req.params
+
+    try {
+        const isProperty = await Property.findById(propertyId)
+        if (!isProperty) return next(errorHandler(404, "Property Not Found"))
+        await Property.findByIdAndDelete(propertyId);
+        res.status(200).json({ success: true, message: "Property deleted successfully" })
+    } catch (err) {
+        return next(errorHandler(500, err.message));
+    }
+}
 
 export const getPropertyById = async (req, res, next) => {
     const { id } = req.params;
@@ -77,16 +89,18 @@ export const addTenant = async (req, res, next) => {
     }
 }
 
+
 const addFirstDues = async (tenant) => {
-    let joiningDate = new Date(tenant.dateOfJoining);
+    const today = new Date();
+    const joiningDate = new Date(tenant.dateOfJoining);
+
     if (joiningDate.getDate() !== 1) {
         // Calculate initial due amount until end of first month
-        console.log("here i come")
         const nextMonthOfJoiningDate = new Date(joiningDate);
         nextMonthOfJoiningDate.setMonth(nextMonthOfJoiningDate.getMonth() + 1);
         nextMonthOfJoiningDate.setDate(1);
 
-        const daysInInitialPeriod = (nextMonthOfJoiningDate - joiningDate) / (1000 * 60 * 60 * 24);
+        const daysInInitialPeriod = Math.floor((nextMonthOfJoiningDate - joiningDate) / (1000 * 60 * 60 * 24));
         const dailyRent = tenant.rentAmount / 30; // Assuming 30 days in a month for simplicity
         const initialDueAmount = Math.round(dailyRent * daysInInitialPeriod);
 
@@ -98,8 +112,44 @@ const addFirstDues = async (tenant) => {
 
         await initialPaymentRecord.save();
         tenant.paymentRecords.push(initialPaymentRecord._id);
-        tenant.currentDues = initialDueAmount
-        console.log(tenant)
+        tenant.currentDues += initialDueAmount;
+    } else {
+        // If joining date is the 1st, calculate initial due amount for the whole month
+        const daysInInitialPeriod = new Date(joiningDate.getFullYear(), joiningDate.getMonth() + 1, 0).getDate();
+        // const dailyRent = tenant.rentAmount / 30;
+        // const initialDueAmount = Math.round(dailyRent * daysInInitialPeriod);
+
+        const initialPaymentRecord = new Payment({
+            tenantId: tenant._id,
+            dueAmount: tenant.rentAmount,
+            dueDate: joiningDate
+        });
+
+        await initialPaymentRecord.save();
+        tenant.paymentRecords.push(initialPaymentRecord._id);
+        tenant.currentDues += tenant.rentAmount;
     }
-    return tenant.save()
+
+    // Generate records for subsequent months until today
+    let nextDueDate = new Date(joiningDate);
+    nextDueDate.setMonth(nextDueDate.getMonth() + 1);
+    nextDueDate.setDate(1);
+
+    while (nextDueDate <= today) {
+        const paymentRecord = new Payment({
+            tenantId: tenant._id,
+            dueAmount: tenant.rentAmount,
+            dueDate: nextDueDate
+        });
+
+        await paymentRecord.save();
+        tenant.paymentRecords.push(paymentRecord._id);
+        tenant.currentDues += tenant.rentAmount;
+
+        nextDueDate.setMonth(nextDueDate.getMonth() + 1);
+        nextDueDate.setDate(1);
+    }
+    if (tenant.currentDues > 0) tenant.paymentStatus = "Due"
+    return await tenant.save();
 }
+

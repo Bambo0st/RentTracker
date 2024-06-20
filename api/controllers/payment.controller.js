@@ -112,7 +112,7 @@ export const recordPayment = async (req, res) => {
         const unpaidPayments = await Payment.find({ tenantId: tenant._id, paid_status: false });
         tenant.currentDues = unpaidPayments.reduce((total, record) => total + record.dueAmount, 0);
 
-        tenant.paymentStatus = tenant.currentDues > 0 ? 'due' : 'up-to-date';
+        tenant.paymentStatus = tenant.currentDues > 0 ? 'Due' : 'Up-to-date';
 
         await tenant.save();
 
@@ -124,6 +124,15 @@ export const recordPayment = async (req, res) => {
 };
 
 
-export const getDues = (req,res) =>{
-    
+export const getRecordByPaymentId = async (req, res) => {
+    const { paymentId } = req.params;
+    try {
+        const payment = await Payment.findById(paymentId);
+        if (!payment) {
+            return res.status(404).json({ error: 'Payment record not found' });
+        }
+        res.status(200).json(payment);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 }

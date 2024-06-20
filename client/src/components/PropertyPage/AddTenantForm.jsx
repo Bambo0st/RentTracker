@@ -8,7 +8,6 @@ const AddTenantForm = ({ onAddTenant, error }) => {
         rentAmount: '',
         dateOfJoining: '',
         currentDues: 0,
-        // dueDate: ''
     });
 
     const handleInputChange = (e) => {
@@ -16,9 +15,9 @@ const AddTenantForm = ({ onAddTenant, error }) => {
         setNewTenant((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onAddTenant(newTenant);
+        await onAddTenant(newTenant);
         setNewTenant({
             name: '',
             contact: '',
@@ -26,9 +25,10 @@ const AddTenantForm = ({ onAddTenant, error }) => {
             rentAmount: '',
             currentDues: 0,
             dateOfJoining: '',
-            // dueDate: ''
         });
+
     };
+
 
     return (
         <div className="max-w-md mx-auto bg-white shadow-md rounded-md p-6 mb-6">
@@ -92,18 +92,6 @@ const AddTenantForm = ({ onAddTenant, error }) => {
                         required
                     />
                 </div>
-                {/* <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dueDate">Due Date</label>
-                    <input
-                        type="date"
-                        id="dueDate"
-                        name="dueDate"
-                        value={newTenant.dueDate}
-                        onChange={handleInputChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        required
-                    />
-                </div> */}
                 <div className="flex items-center justify-between">
                     <button
                         type="submit"
@@ -117,6 +105,5 @@ const AddTenantForm = ({ onAddTenant, error }) => {
         </div>
     );
 };
-
 
 export default AddTenantForm;

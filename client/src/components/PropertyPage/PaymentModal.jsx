@@ -23,6 +23,12 @@ const PaymentModal = ({ isOpen, onRequestClose, paymentRecords, onRecordPayment 
         setSelectedPaymentId(null);
     };
 
+    const paymentInfo = (paymentId) => {
+        console.log("hii")
+        console.log(paymentRecords)
+        console.log(paymentId)
+        return paymentRecords.find(record => record._id === paymentId)
+    }
     return (
         <Modal
             isOpen={isOpen}
@@ -83,8 +89,8 @@ const PaymentModal = ({ isOpen, onRequestClose, paymentRecords, onRecordPayment 
                     isOpen={recordModalOpen}
                     onRequestClose={closeRecordModal}
                     paymentId={selectedPaymentId}
+                    paymentInfo={paymentInfo(selectedPaymentId)}
                     onConfirm={(paymentId) => {
-                        // Handle recording payment logic here
                         onRecordPayment(paymentId)
                         closeRecordModal();
                     }}
