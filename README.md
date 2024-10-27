@@ -1,7 +1,11 @@
 # RentTrackr
 
 **Technologies:** MERN Stack, Tailwind CSS, Firebase  
-**Live Demo:** [https://renttracker.onrender.com/](https://renttracker.onrender.com/)
+**Live Demo:** [https://renttracker.onrender.com/](https://renttracker.onrender.com/)  
+
+**Demo Credentials:**  
+- **Email:** 123@123.com  
+- **Password:** 123
 
 **Description:**
 
