@@ -48,7 +48,7 @@ cd ..
 
 #### a. Server `.env` File
 
-Create a `.env` file in the `server` directory and add the following variables:
+Create a `.env` file in the `root` directory for server .env and add the following variables:
 
 ```env
 MONGO_URL="<MONGO_URL>"
