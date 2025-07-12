@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import RecordPaymentModal from './RecordPaymentModal'; // Import RecordPaymentModal
+import RecordPaymentModal from './RecordPaymentModal'; 
 
 Modal.setAppElement('#root');  // Ensure you have a root element in your HTML
 

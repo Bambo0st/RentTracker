@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import PropertyInfo from '../components/PropertyPage/PropertyInfo';
 import AddTenantForm from '../components/PropertyPage/AddTenantForm';
 import TenantsTable from '../components/PropertyPage/TenantsTable';
-import TotalDues from '../components/PropertyPage/TotalDues';  // Make sure this path is correct
+import TotalDues from '../components/PropertyPage/TotalDues';
 
 function Property() {
     const { id } = useParams();
@@ -11,6 +11,21 @@ function Property() {
     const [error, setError] = useState(null);
     const [property, setProperty] = useState(null);
     const [tenants, setTenants] = useState([]);
+
+    const fetchTenants = async () => {
+        try {
+            const res = await fetch(`/api/property/${id}/tenants`);
+            if (!res.ok) {
+                throw new Error(`Failed to fetch tenants for property with ID ${id}`);
+            }
+            const data = await res.json();
+            setTenants(data || []);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         const fetchProperty = async () => {
@@ -26,21 +41,6 @@ function Property() {
             }
         };
 
-        const fetchTenants = async () => {
-            try {
-                const res = await fetch(`/api/property/${id}/tenants`);
-                if (!res.ok) {
-                    throw new Error(`Failed to fetch tenants for property with ID ${id}`);
-                }
-                const data = await res.json();
-                setTenants(data || []);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchProperty();
         fetchTenants();
     }, [id]);
@@ -49,14 +49,12 @@ function Property() {
         try {
             const res = await fetch(`/api/property/${id}/tenants`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(tenantData)
             });
             if (res.ok) {
                 const addedTenant = await res.json();
-                setTenants([...tenants, addedTenant]);
+                setTenants(prev => [...prev, addedTenant]);
                 setError('');
             } else {
                 const errorData = await res.json();
@@ -72,7 +70,6 @@ function Property() {
             const res = await fetch(`/api/property/${id}/tenants/${tenantId}`, {
                 method: 'DELETE'
             });
-
             if (res.ok) {
                 setTenants(tenants.filter(tenant => tenant._id !== tenantId));
             } else {
@@ -86,20 +83,7 @@ function Property() {
 
     const handleRecordTransaction = async (tenantId) => {
         try {
-            const res = await fetch(`/api/property/${id}/tenants/${tenantId}/record-transaction`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ transactionDetails: 'Details of the transaction' })
-            });
-
-            if (res.ok) {
-                console.log('Transaction recorded successfully');
-            } else {
-                const errorData = await res.json();
-                setError(errorData.message || 'Failed to record transaction');
-            }
+            await fetchTenants();  
         } catch (err) {
             setError('Failed to record transaction');
         }
@@ -110,11 +94,8 @@ function Property() {
     return (
         <div className="container mx-auto p-4">
             <PropertyInfo property={property} />
-
             <AddTenantForm onAddTenant={handleAddTenant} error={error} />
-
             <TenantsTable tenants={tenants} onDeleteTenant={handleDeleteTenant} onRecordTransaction={handleRecordTransaction} />
-
             <TotalDues tenants={tenants} />
         </div>
     );

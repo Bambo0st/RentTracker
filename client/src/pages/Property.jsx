@@ -99,7 +99,6 @@ function Property() {
             });
 
             if (res.ok) {
-                // Optionally handle success scenario
                 console.log('Transaction recorded successfully');
             } else {
                 const errorData = await res.json();

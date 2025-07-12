@@ -5,26 +5,10 @@ const PaymentSchema = new mongoose.Schema({
         ref: 'Tenant',
         required: true
     },
-    dueAmount: {
-        type: Number,
-        required: true
-    },
-    dueDate: {
-        type: Date,
-        required: true
-    },
-    paymentDate: {
-        type: Date,
-        default: null
-    },
-    description: {
-        type: String,
-        default: ''
-    },
-    paid_status: {
-        type: Boolean,
-        default: false
-    }
+    dueAmount: { type: Number, required: true },
+    dueDate: { type: Date, required: true },
+    paymentDate: { type: Date, default: null },
+    paid_status: { type: Boolean, default: false }
 });
 
 const Payment = mongoose.model('Payment', PaymentSchema);

@@ -12,4 +12,4 @@ router.get('/:propertyId/tenants', getTenants);
 router.post('/:propertyId/tenants', addTenant);
 router.get('/:propertyId/tenants/:tenantId', getTenantById);
 router.delete('/:propertyId/tenants/:tenantId', removeTenantById);
-export default router
+export default router 

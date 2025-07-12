@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PaymentModal from './PaymentModal.jsx';
 
-const TenantsTable = ({ tenants, onDeleteTenant }) => {
+const TenantsTable = ({ tenants, onDeleteTenant,onRecordTransaction }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [paymentRecords, setPaymentRecords] = useState([]);
     const [selectedTenantId, setSelectedTenantId] = useState(null);
@@ -20,6 +20,7 @@ const TenantsTable = ({ tenants, onDeleteTenant }) => {
 
     const closeModal = () => {
         setModalIsOpen(false);
+        onRecordTransaction();
         setPaymentRecords([]);
     };
 
