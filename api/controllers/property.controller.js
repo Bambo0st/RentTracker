@@ -77,7 +77,7 @@ export const addTenant = async (req, res, next) => {
         const isTenant = await Tenant.findOne({ room, property: propertyId })
         if (isTenant) return next(errorHandler(400, "Room is already occupied by another Tenant"))
 
-        const newTenant = new Tenant({ name, contact, room, rentAmount, dateOfJoining, dueDate, property: propertyId, currentDues: 0, paymentStatus: "up-to-date" })
+        const newTenant = new Tenant({ name, contact, room, rentAmount, dateOfJoining, dueDate, property: propertyId, currentDues: 0, paymentStatus: "Up-to-date" })
 
         const savedTenant = await addFirstDues(newTenant)
         property.tenants.push(savedTenant._id);

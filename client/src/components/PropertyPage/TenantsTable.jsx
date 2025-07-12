@@ -80,7 +80,7 @@ const TenantsTable = ({ tenants, onDeleteTenant }) => {
                                 <td className={`py-2 px-4 border-b border-gray-200 font-bold ${tenant.currentDues > 0 ? 'text-red-500' : 'text-green-500'}`}>
                                     ₹ {tenant.currentDues}
                                 </td>
-                                <td className={`py-2 px-4 border-b border-gray-200 font-bold ${tenant.paymentStatus === 'up-to-date' ? 'text-green-500' : 'text-yellow-500'}`}>
+                                <td className={`py-2 px-4 border-b border-gray-200 font-bold ${tenant.paymentStatus === 'Up-to-date' ? 'text-green-500' : 'text-yellow-500'}`}>
                                     {tenant.paymentStatus}
                                 </td>
                                 <td className="py-2 px-4 border-b border-gray-200">
