@@ -1,0 +1,107 @@
+1. Middleware:
+Middleware comes in between the request-response cycle. Example: verifyUser.js
+app.use("/api/user", userRouter); This is also a middleware
+Take this example of router.post('/update/:id', verifyUser, updateUser)
+
+When a request is made it goes to the verifyUser middleware.
+VerifyUser middleware
+    1. Takes the token from cookies
+    2. Verifies if the token is valid or corrupted using jwt.verify
+    3. If not valid it calls next(). next() will take it to next middleware but here 
+      since we dont have any other middleware it goes to the global handler app.use()
+    4. jwt.verify(token, JWT_SECRET, (err,decodedJWT)=>{});
+    5. In our case the decodedJWT is user, so we set req.user=user.
+
+app.use() is a core function in Express that registers middleware functions. These 
+middlewares run before any route handlers
+
+2.express.json() is a built-in middleware in Express that parses incoming JSON requests 
+and makes the data available in req.body
+
+When a client sends a POST or PUT request with Content-Type: application/json, 
+the request body contains raw JSON like this:
+        {
+          "username": "adithya",
+          "password": "1234"
+        }
+
+But Express doesn't parse this automatically. Without express.json(), req.body will be 
+undefined.
+
+So it Parses it as JSON (if Content-Type: application/json)
+Adds the parsed object to req.body
+
+3. user._doc
+export const getUser = async (req, res, next) => {
+    try {
+
+        const user = await User.findById(req.params.id);
+
+        if (!user) return next(errorHandler(404, 'User not found!'));
+
+        const { password: pass, ...rest } = user._doc;
+
+        res.status(200).json(rest);
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+The user._doc helps the destructure the object, to remove password from it. It need not be used unless u want to remove sensitive fields.
+
+4. JWT_TOKEN
+This consists of Header + Payload + Signature and token= <base64url(header)>.<base64url(payload)>.<base64url(signature)>
+
+signature = Hash(header+'.'+payload, JWT_SECRET);
+lets say some one modifies the payload of token, it becomes
+newToken= <base64url(header)>.<base64url(newPayload)>.<base64url(signature)>
+newSignature = Hash(header+'.'+newPayload, JWT_SECRET)
+now jwt.verify checks if newSignature == signature
+
+5. Cookies
+Cookies are small pieces of data (key-value pairs) that the server sends to the client, which the browser stores and sends back automatically with future requests.
+res.cookie('access_token', token, { httpOnly: true }).status(200).json(rest)
+
+httpOnly: true 
+Prevents JavaScript in the browser from accessing the cookie via document.cookie
+Prevents XSS attacks
+
+6. Mongoose 
+It is a very popular ODM (Object Data Modeling) library for MongoDB in Node.js.
+Mongoose is a tool that lets you define schemas, interact with MongoDB, and structure your data using models — all in JavaScript.
+
+without mongoose : db.collection('users').insertOne({ name: 'Alice' });
+with mongoose    : const user = new User({ name: 'Alice' });
+
+7. Payment Records/Dues Calculation.
+Take a look at getRecordsByTenantId at payment.controller.js
+
+Each Tenant contain array of payment records ( contains only the _id of payment object)
+So when we click to see Payment Records of a person we will have to generate Payment Records until first of this month.
+For the first month it takes partial rent until the start of next month and the dueDate for that will be joiningDate.
+For all the other months we will always have dueDate as the start of that month.
+take 
+      join date as 10-07-25 
+      today date as 15-08-25
+      records:
+        [
+          {
+            "tenantId": "<tenant_id>",
+            "dueAmount": 4400,
+            "dueDate": "2025-07-10"
+          },
+          {
+            "tenantId": "<tenant_id>",
+            "dueAmount": 6000,
+            "dueDate": "2025-08-01"
+          }
+        ]
+After the partial month u set the dueDate to first of nextMonth and run a while loop until dueDate<=today and add full month rent due record.
+
+We dont have to start from the joiningDate all the time, if the tenant already has payment records we just start from the last record.
+
+At end since we need to return json objects of payment results we traverse the whole tenant.paymentRecords and fetch the payment object with _id.
+
+
+8. 
