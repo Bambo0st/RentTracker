@@ -104,4 +104,22 @@ We dont have to start from the joiningDate all the time, if the tenant already h
 At end since we need to return json objects of payment results we traverse the whole tenant.paymentRecords and fetch the payment object with _id.
 
 
-8. 
+8. Refer the frontend components hierarchy
+The Property_new.jsx contains state called tenants, this tenants is used by 2 of the components, i.e TenantsTable and TotalDues.
+
+So suppose deep down in RecordPayment Modal we confirm a transaction (tenant info is updated) we will have to pass this new tenant back to Property_new componenent because tenant in Property_new is also used by TotalDues, when tenant is updated TotalDues will be changed too.
+
+The way we do is for example look at handleRecordTransaction function in Property_new.jsx, we pass this function as prop in component. When TenantsTable records a transaction we call this function inside TenantsTable using the prop. This handleRecordTransaction will then fetch the new tenants in Property_new which will be reflected in TotalDues.
+
+This might become clumpsy, having so many props, often leading to prop drilling. Its better to store tenants as a redux state or use context provider which can be used multiple places.
+
+
+9. UML diagram for Backend 
+
+User and Property have aggregation relationship which means Property can exist without an user. Each user can have any number of properties but each property can have only one user.
+
+Property and Tenants have Composition relationship which means if Property is removed then all the Tenants assossiciated with are removed too.
+Each property can have multiple tenants but each tenant belong to single property.
+
+Tenants and Payment have Composition, with one-to-many relationship.
+
