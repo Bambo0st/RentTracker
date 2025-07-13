@@ -112,8 +112,8 @@ npm run dev
 
 ### UML diagram
 
-![ ](./images/RentTracker-UML.jpg)
+![ ](./images/RentTracker-UML.png)
 
 ### Frontend Components Hierarcy
 
-![ ](./images/Frontend componenets hierarchy.jpg)
+![ ](./images/Frontend componenets hierarchy.png)
