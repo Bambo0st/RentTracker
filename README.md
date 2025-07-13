@@ -116,4 +116,4 @@ npm run dev
 
 ### Frontend Components Hierarcy
 
-![ ](./images/Frontend componenets hierarchy.png)
+![ ](./images/Frontend-components.png)
