@@ -1,10 +1,11 @@
 # RentTrackr
 
 **Technologies:** MERN Stack, Tailwind CSS, Firebase  
-**Live Demo:** [https://renttracker.onrender.com/](https://renttracker.onrender.com/)  
+**Live Demo:** [https://renttracker.onrender.com/](https://renttracker.onrender.com/)
 
-**Demo Credentials:**  
-- **Email:** 123@123.com  
+**Demo Credentials:**
+
+- **Email:** 123@123.com
 - **Password:** 123
 
 **Description:**
@@ -30,6 +31,7 @@ git clone https://github.com/Bambo0st/RentTracker.git
 ```bash
 cd renttrackr
 ```
+
 ### 3. Install Dependencies
 
 #### a. Server Dependencies
@@ -37,6 +39,7 @@ cd renttrackr
 ```bash
 npm install
 ```
+
 #### b. Client Dependencies
 
 ```bash
@@ -44,6 +47,7 @@ cd client
 npm install
 cd ..
 ```
+
 ### 4. Adding Environment Variables
 
 #### a. Server `.env` File
@@ -60,36 +64,56 @@ JWT_SECRET="<JWT_SECRET>"
 ```bash
 cd client
 ```
+
 Create a `.env` file in the `client` directory and add the following variable:
+
 ```env
 VITE_FIREBASE_API_KEY="<VITE_FIREBASE_API_KEY>"
 ```
-```bash 
+
+```bash
 cd ..
 ```
+
 ### 4. Run the application
 
 #### a. Start the Server
 
-```bash 
+```bash
 npm run dev
 ```
+
 Open another terminal.
+
 #### b. Start the Client
+
 ```bash
 cd client
 npm run dev
 ```
+
 ## Screenshots
 
 ### Home Page
+
 ![ ](./images/1.jpg)
 
 ### Add Tenant
+
 ![ ](./images/2.jpg)
 
 ### Rent Details
+
 ![ ](./images/3.jpg)
 
 ### Transaction History
+
 ![ ](./images/4.jpg)
+
+### UML diagram
+
+![ ](./images/RentTracker-UML.jpg)
+
+### Frontend Components Hierarcy
+
+![ ](./images/Frontend componenets hierarchy.jpg)
